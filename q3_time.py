@@ -1,4 +1,7 @@
 from typing import List, Tuple
+from datetime import datetime
+from load_tweets import load_tweets
+from collections import Counter
 
 def q3_time(file_path: str) -> List[Tuple[str, int]]:
     tweets = load_tweets(file_path)

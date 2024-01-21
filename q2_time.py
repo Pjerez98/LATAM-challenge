@@ -1,22 +1,17 @@
 from typing import List, Tuple
-from datetime import datetime
-from load_tweets import load_tweets
 from collections import Counter
+from load_tweets import load_tweets
 import emoji
 
 def q2_time(file_path: str) -> List[Tuple[str, int]]:
     tweets = load_tweets(file_path)
-    contenidos = [tweet['content'] for tweet in tweets]
+    emojis_counter = Counter()
 
-    # Se obtiene los emojis ÚNICOS presentes en cada tweet, para ver cual es el más común en todos los tweets,
-    emojis = [list(set([fila['emoji'] for fila in emoji.emoji_list(contenido)])) for contenido in contenidos]
-    emojis_plano = [emojii for lista_emojis in emojis for emojii in lista_emojis]
-    emojis_plano
-    
-    # Conteo de emojis
-    emojis_counter = Counter(emojis_plano)
-    
-    # Encontrar los top 10 emojis
+    for tweet in tweets:
+        contenidos = tweet['content']
+        emojis = list(set([fila['emoji'] for fila in emoji.emoji_list(contenidos)]))
+        emojis_counter.update(emojis)
+
     top_emojis = emojis_counter.most_common(10)
 
     return top_emojis

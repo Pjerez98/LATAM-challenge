@@ -5,27 +5,24 @@ from collections import Counter
 
 def q1_time(file_path: str) -> List[Tuple[datetime.date, str]]:
     tweets = load_tweets(file_path)
-    # Por cada tweet, guardamos su fecha respectiva
-    tweets_fechas = [datetime.strptime(tweet["date"], "%Y-%m-%dT%H:%M:%S%z").date() for tweet in tweets]
-    # Luego, se cuenta el número de tweets por fecha, análogo a realizar un groupby por fecha y utilizar la función agregada count
-    contador_fechas_tweets = Counter(tweets_fechas)
-    # Finalmente, ordenamos de mayor a menor, y luego seleccionamos las top 10 fechas
-    fechas_ordenadas_tweets = sorted(contador_fechas_tweets.items(), key=lambda x: x[1], reverse=True)
-    top_10_fechas = fechas_ordenadas_tweets[:10]
-    top_10_fechas
 
-    # De la misma forma, procedemos con los usuarios
+    # Contadores para fechas y usuarios
+    contador_fechas = Counter()
+    contador_users = Counter()
 
-    # Por cada tweet, guardamos su usuario respectivo
-    tweets_users = [tweet["user"]["username"] for tweet in tweets]
-    # Luego, se cuenta el número de tweets por fecha, análogo a realizar un groupby por fecha y utilizar la función agregada count
-    contador_fechas_users = Counter(tweets_users)
-    # Finalmente, ordenamos de mayor a menor, y luego seleccionamos las top 10 fechas
-    user_ordenados_tweets = sorted(contador_fechas_users.items(), key=lambda x: x[1], reverse=True)
-    top_10_users = user_ordenados_tweets[:10]
-    top_10_users
+    # Procesar cada tweet una vez y actualizar los contadores
+    for tweet in tweets:
+        fecha = datetime.strptime(tweet["date"], "%Y-%m-%dT%H:%M:%S%z").date()
+        user = tweet["user"]["username"]
 
-    top_dates_users = [(fecha[0],user[0]) for fecha,user in zip(top_10_fechas,top_10_users)]
-    top_dates_users
+        contador_fechas[fecha] += 1
+        contador_users[user] += 1
+
+    # Obtener las top 10 fechas y usuarios
+    top_10_fechas = contador_fechas.most_common(10)
+    top_10_users = contador_users.most_common(10)
+
+    # Combinar fechas y usuarios en una lista de tuplas
+    top_dates_users = list(zip([fecha[0] for fecha in top_10_fechas], [user[0] for user in top_10_users]))
 
     return top_dates_users
